@@ -1,15 +1,24 @@
-# Responsive Design Implementation Plan
+# Frontend-Backend Integration TODO
 
-## Tasks to Complete
+## Completed
+- [x] Analyze backend API endpoints and frontend components
+- [x] Create integration plan
 
-- [x] Enhance global CSS (src/index.css) with additional media queries for tablet and large screen sizes
-- [x] Adjust grid layouts in App.jsx for better stacking on small screens and spacing on larger screens
-- [ ] Improve Summary.jsx grid to stack vertically on very small screens
-- [ ] Adjust TransactionForm.jsx form layout for small screens
-- [ ] Add responsive padding and margins to components for better mobile experience
-- [ ] Ensure text sizes and button sizes are appropriate across all screen sizes
+## Completed
+- [x] Create API helper functions in Frontend/src/api.js
+- [x] Configure proxy in Frontend/vite.config.js
+- [x] Update App.jsx to fetch data from API on load
+- [x] Update TransactionForm.jsx to submit transactions to API
+- [x] Update GoalForm.jsx to submit goals to API
+- [x] Update GoalsSection.jsx to handle goal toggle via API
+- [x] Update Summary.jsx to use fetched transactions
+- [x] Remove localStorage usage from App.jsx
+- [x] Add error handling and loading states
+- [x] Integration complete - frontend now calls backend APIs
 
-## Followup Steps
-- [ ] Test the website on different screen sizes using browser dev tools
-- [ ] Verify that all components stack properly on mobile devices
-- [ ] Ensure touch targets are appropriate size for mobile interaction
+## Notes
+- Backend runs on port 5000, frontend on default Vite port (5173)
+- Proxy /api requests to http://localhost:5000/api
+- Use fetch API for HTTP requests
+- Handle CORS (already enabled on backend)
+- Add loading and error states in components

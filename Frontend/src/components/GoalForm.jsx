@@ -24,13 +24,12 @@ function GoalForm({ onAdd, darkMode }) {
     setIsSubmitting(true);
     setErrors({});
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      onAdd({ id: Date.now(), title: title.trim(), target: parseFloat(target), due, completed: false });
+      await onAdd({ title: title.trim(), target: parseFloat(target), due, completed: false });
       setTitle(""); setTarget(""); setDue("");
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
-    } catch {
-      setErrors({ general: "Failed to add goal. Please try again." });
+    } catch (err) {
+      setErrors({ general: err.message || "Failed to add goal. Please try again." });
     } finally {
       setIsSubmitting(false);
     }

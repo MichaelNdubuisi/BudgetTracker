@@ -25,16 +25,14 @@ function TransactionForm({ onAddTransaction, darkMode }) {
     setIsSubmitting(true);
     setErrors({});
     try {
-      // Simulate async operation (e.g., API call)
-      await new Promise(resolve => setTimeout(resolve, 500));
-      onAddTransaction({ type, amount: parseFloat(amount), category: category.trim(), date });
+      await onAddTransaction({ type, amount: parseFloat(amount), category: category.trim(), date });
       setAmount("");
       setCategory("");
       setDate("");
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
-    } catch {
-      setErrors({ general: "Failed to add transaction. Please try again." });
+    } catch (err) {
+      setErrors({ general: err.message || "Failed to add transaction. Please try again." });
     } finally {
       setIsSubmitting(false);
     }

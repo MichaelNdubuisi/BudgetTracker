@@ -7,25 +7,13 @@ import TransactionForm from "./components/TransactionForm";
 import GoalsSection from "./components/GoalsSection";
 import WeeklyStats from "./components/WeeklyStats";
 import WelcomeModal from "./components/WelcomeModal";
+import { getTransactions, addTransaction, getGoals, addGoal, updateGoal } from "./api";
 
 function App() {
-  const [transactions, setTransactions] = useState(() => {
-    const stored = localStorage.getItem("transactions");
-    return stored ? JSON.parse(stored) : [];
-  });
-  useEffect(() => {
-    localStorage.setItem("transactions", JSON.stringify(transactions));
-  }, [transactions]);
-
-  const [goals, setGoals] = useState(() => {
-    const stored = localStorage.getItem("goals");
-    return stored ? JSON.parse(stored) : [];
-  });
-  useEffect(() => {
-    localStorage.setItem("goals", JSON.stringify(goals));
-  }, [goals]);
-
-  // State variables moved to TransactionForm component
+  const [transactions, setTransactions] = useState([]);
+  const [goals, setGoals] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [darkMode, setDarkMode] = useState(() => {
     const stored = localStorage.getItem("theme");
@@ -43,23 +31,77 @@ function App() {
     }
   }, [darkMode]);
 
-  const handleAddTransaction = (transaction) => {
-    setTransactions([
-      ...transactions,
-      { id: Date.now(), ...transaction },
-    ]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [transactionsData, goalsData] = await Promise.all([
+          getTransactions(),
+          getGoals(),
+        ]);
+        setTransactions(transactionsData);
+        // Map backend goal fields to frontend format
+        const mappedGoals = goalsData.map(goal => ({
+          id: goal._id,
+          title: goal.title,
+          target: goal.targetAmount,
+          due: goal.deadline,
+          completed: goal.completed,
+        }));
+        setGoals(mappedGoals);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleAddTransaction = async (transaction) => {
+    try {
+      const newTransaction = await addTransaction(transaction);
+      setTransactions([...transactions, newTransaction]);
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
-  const handleAddGoal = (goal) => setGoals([goal, ...goals]);
-  const toggleGoal = (id) =>
-    setGoals(
-      goals.map((g) => (g.id === id ? { ...g, completed: !g.completed } : g))
+  const handleAddGoal = async (goal) => {
+    try {
+      const newGoal = await addGoal(goal);
+      setGoals([newGoal, ...goals]);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const toggleGoal = async (id) => {
+    try {
+      const goal = goals.find((g) => g._id === id);
+      if (!goal) return;
+      const updatedGoal = await updateGoal(id, { completed: !goal.completed });
+      setGoals(goals.map((g) => (g._id === id ? updatedGoal : g)));
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-xl">Loading...</div>
+      </div>
     );
+  }
 
-  // Removed handleExportData from App.jsx as it will be passed to Header component
-
-
-
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-xl text-red-500">Error: {error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className={`min-h-screen transition-colors ${darkMode ? 'bg-gray-900 text-gray-200' : 'bg-gray-50 text-gray-900'}`}>
