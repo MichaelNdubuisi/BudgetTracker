@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Loader2, CheckCircle, AlertCircle } from "lucide-react";
 
-function TransactionForm({ onAddTransaction, darkMode }) {
+function TransactionForm({ onAddTransaction, darkMode, className = "" }) {
   const [type, setType] = useState("income");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
@@ -39,7 +39,7 @@ function TransactionForm({ onAddTransaction, darkMode }) {
   };
 
   return (
-    <section className={`md:col-span-2 rounded-xl shadow-lg p-8 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
+    <section className={`md:col-span-2 rounded-xl shadow-lg p-8 ${className} ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
       <h2 className={`text-2xl font-semibold mb-6 ${darkMode ? 'text-indigo-200' : 'text-indigo-700'}`}>
         Add Transaction
       </h2>

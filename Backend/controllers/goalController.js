@@ -1,10 +1,10 @@
 const Goal = require("../models/Goal");
 
-// @desc Get all goals
+// @desc Get all goals for the logged-in user
 // @route GET /api/goals
 const getGoals = async (req, res) => {
   try {
-    const goals = await Goal.find().sort({ createdAt: -1 });
+    const goals = await Goal.find({ user: req.user._id }).sort({ createdAt: -1 });
     res.json(goals);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
@@ -22,6 +22,7 @@ const addGoal = async (req, res) => {
     }
 
     const newGoal = new Goal({
+      user: req.user._id,
       title,
       targetAmount,
       deadline,
@@ -42,6 +43,11 @@ const updateGoal = async (req, res) => {
 
     if (!goal) {
       return res.status(404).json({ message: "Goal not found" });
+    }
+
+    // Check if goal belongs to user
+    if (goal.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: "Not authorized" });
     }
 
     goal.title = req.body.title || goal.title;
@@ -67,6 +73,11 @@ const deleteGoal = async (req, res) => {
 
     if (!goal) {
       return res.status(404).json({ message: "Goal not found" });
+    }
+
+    // Check if goal belongs to user
+    if (goal.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: "Not authorized" });
     }
 
     await goal.deleteOne();

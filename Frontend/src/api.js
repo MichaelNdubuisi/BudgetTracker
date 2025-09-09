@@ -3,15 +3,35 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
 console.log("API_BASE_URL:", API_BASE_URL);
 
 async function fetchJSON(url, options = {}) {
-  const res = await fetch(url, options);
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const res = await fetch(url, { ...options, headers });
+  const text = await res.text();
+  let data;
+  if (text.trim() === '') {
+    data = {};
+  } else {
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = {};
+    }
+  }
+
   if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    const error = new Error(errorData.message || 'API request failed');
+    const error = new Error(data.message || 'API request failed');
     error.status = res.status;
-    error.data = errorData;
+    error.data = data;
     throw error;
   }
-  return res.json();
+  return data;
 }
 
 export async function getTransactions() {

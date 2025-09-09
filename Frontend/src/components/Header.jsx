@@ -1,6 +1,6 @@
-import { Sun, Moon } from "lucide-react";
+import { Sun, Moon, LogOut } from "lucide-react";
 
-function Header({ darkMode, setDarkMode}) {
+function Header({ darkMode, setDarkMode, onLogout }) {
   return (
     <header className="max-w-5xl mx-auto py-8 px-6 flex justify-between items-center">
       <div>
@@ -22,6 +22,13 @@ function Header({ darkMode, setDarkMode}) {
           ) : (
             <Moon className="text-gray-600" />
           )}
+        </button>
+        <button
+          aria-label="Logout"
+          onClick={onLogout}
+          className={`p-2 rounded-md transition-colors focus:outline-none focus:ring-2 ${darkMode ? 'bg-gray-800 hover:bg-gray-700 focus:ring-red-500' : 'bg-gray-200 hover:bg-gray-300 focus:ring-red-600'}`}
+        >
+          <LogOut className={darkMode ? 'text-red-400' : 'text-red-600'} />
         </button>
       </div>
     </header>

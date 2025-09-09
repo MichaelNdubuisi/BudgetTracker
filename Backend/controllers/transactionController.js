@@ -1,10 +1,10 @@
 const Transaction = require("../models/Transaction");
 
-// @desc Get all transactions
+// @desc Get all transactions for the logged-in user
 // @route GET /api/transactions
 const getTransactions = async (req, res) => {
   try {
-    const transactions = await Transaction.find().sort({ createdAt: -1 });
+    const transactions = await Transaction.find({ user: req.user._id }).sort({ createdAt: -1 });
     res.json(transactions);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
@@ -22,6 +22,7 @@ const addTransaction = async (req, res) => {
     }
 
     const newTransaction = new Transaction({
+      user: req.user._id,
       type,
       category,
       amount,
@@ -42,6 +43,11 @@ const deleteTransaction = async (req, res) => {
 
     if (!transaction) {
       return res.status(404).json({ message: "Transaction not found" });
+    }
+
+    // Check if transaction belongs to user
+    if (transaction.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: "Not authorized" });
     }
 
     await transaction.deleteOne();

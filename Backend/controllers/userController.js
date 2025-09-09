@@ -1,10 +1,81 @@
 const User = require("../models/User");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-// @desc Get user profile
-// @route GET /api/user
-const getUser = async (req, res) => {
+// @desc Register a new user
+// @route POST /api/users/register
+const registerUser = async (req, res) => {
   try {
-    const user = await User.findOne(); // only one user
+    const { name, email, password, currency } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // Check if user exists
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create user
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      currency,
+    });
+
+    if (user) {
+      res.status(201).json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        currency: user.currency,
+        token: generateToken(user._id),
+      });
+    } else {
+      res.status(400).json({ message: "Invalid user data" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// @desc Authenticate a user
+// @route POST /api/users/login
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Check for user email
+    const user = await User.findOne({ email });
+
+    if (user && (await bcrypt.compare(password, user.password))) {
+      res.json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        currency: user.currency,
+        token: generateToken(user._id),
+      });
+    } else {
+      res.status(401).json({ message: "Invalid credentials" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// @desc Get current user profile
+// @route GET /api/users/profile
+const getUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select('-password');
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -14,29 +85,49 @@ const getUser = async (req, res) => {
   }
 };
 
-// @desc Create or update user profile
-// @route POST /api/user
-const createOrUpdateUser = async (req, res) => {
+// @desc Update user profile
+// @route PUT /api/users/profile
+const updateUserProfile = async (req, res) => {
   try {
-    const { name, email, currency } = req.body;
+    const user = await User.findById(req.user._id);
 
-    let user = await User.findOne();
     if (user) {
-      // update existing
-      user.name = name || user.name;
-      user.email = email || user.email;
-      user.currency = currency || user.currency;
+      user.name = req.body.name || user.name;
+      user.email = req.body.email || user.email;
+      user.currency = req.body.currency || user.currency;
+
+      if (req.body.password) {
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(req.body.password, salt);
+      }
+
       const updatedUser = await user.save();
-      return res.json(updatedUser);
+
+      res.json({
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        currency: updatedUser.currency,
+        token: generateToken(updatedUser._id),
+      });
     } else {
-      // create new
-      const newUser = new User({ name, email, currency });
-      await newUser.save();
-      return res.status(201).json(newUser);
+      res.status(404).json({ message: "User not found" });
     }
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
 };
 
-module.exports = { getUser, createOrUpdateUser };
+// Generate JWT
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: "30d",
+  });
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+  getUserProfile,
+  updateUserProfile,
+};

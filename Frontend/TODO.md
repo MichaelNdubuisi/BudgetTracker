@@ -1,24 +1,35 @@
-# Frontend-Backend Integration TODO
+# TODO: Rearrange Components on Mobile
 
-## Completed
-- [x] Analyze backend API endpoints and frontend components
-- [x] Create integration plan
+- [x] Separate WeeklyStats into its own section in App.jsx
+- [x] Add order classes for mobile: Summary (1), TransactionForm (2), WeeklyStats (3), CategoryPieChart (4), GoalsSection (5)
+- [x] Add md:col-span-1 to WeeklyStats section
+- [x] Add md:col-span-2 to GoalsSection for desktop
+- [x] Verify desktop layout remains correct
 
-## Completed
-- [x] Create API helper functions in Frontend/src/api.js
-- [x] Configure proxy in Frontend/vite.config.js
-- [x] Update App.jsx to fetch data from API on load
-- [x] Update TransactionForm.jsx to submit transactions to API
-- [x] Update GoalForm.jsx to submit goals to API
-- [x] Update GoalsSection.jsx to handle goal toggle via API
-- [x] Update Summary.jsx to use fetched transactions
-- [x] Remove localStorage usage from App.jsx
-- [x] Add error handling and loading states
-- [x] Integration complete - frontend now calls backend APIs
+# TODO: Implement User Authentication and Data Isolation
 
-## Notes
-- Backend runs on port 5000, frontend on default Vite port (5173)
-- Proxy /api requests to http://localhost:5000/api
-- Use fetch API for HTTP requests
-- Handle CORS (already enabled on backend)
-- Add loading and error states in components
+## Backend Tasks (Completed)
+- [x] Install bcryptjs and jsonwebtoken dependencies
+- [x] Create authMiddleware.js for JWT verification
+- [x] Update User model: add password field, make email required
+- [x] Update Transaction model: add user field
+- [x] Update Goal model: add user field
+- [x] Update userController: add register, login, getProfile, updateProfile functions
+- [x] Update transactionController: filter by user, add user to new transactions, check ownership on delete
+- [x] Update goalController: filter by user, add user to new goals, check ownership on update/delete
+- [x] Update userRoutes: add register, login, profile routes with auth
+- [x] Update transactionRoutes: add protect middleware to all routes
+- [x] Update goalRoutes: add protect middleware to all routes
+- [x] Update server.js: ensure routes are protected (already done via routes)
+
+## Frontend Tasks
+- [x] Create Login/Register components
+- [x] Update App.jsx to handle authentication state
+- [x] Update api.js to include token in requests
+- [x] Add logout functionality
+- [x] Update components to show user-specific data
+
+## Followup Steps
+- [ ] Add JWT_SECRET to Backend/.env file (e.g., JWT_SECRET=your_secret_key_here)
+- [ ] Test authentication endpoints
+- [ ] Migrate existing data if any (associate with a user)

@@ -7,9 +7,14 @@ import TransactionForm from "./components/TransactionForm";
 import GoalsSection from "./components/GoalsSection";
 import WeeklyStats from "./components/WeeklyStats";
 import WelcomeModal from "./components/WelcomeModal";
+import Login from "./components/Login";
 import { getTransactions, addTransaction, getGoals, addGoal, updateGoal } from "./api";
 
 function App() {
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
   const [transactions, setTransactions] = useState([]);
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,6 +37,10 @@ function App() {
   }, [darkMode]);
 
   useEffect(() => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     const fetchData = async () => {
       try {
         setLoading(true);
@@ -56,7 +65,7 @@ function App() {
       }
     };
     fetchData();
-  }, []);
+  }, [user]);
 
   const handleAddTransaction = async (transaction) => {
     try {
@@ -87,12 +96,28 @@ function App() {
     }
   };
 
+  const handleLogin = (userData) => {
+    setUser(userData);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+    setTransactions([]);
+    setGoals([]);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-xl">Loading...</div>
       </div>
     );
+  }
+
+  if (!user) {
+    return <Login onLogin={handleLogin} darkMode={darkMode} />;
   }
 
   if (error) {
@@ -105,21 +130,24 @@ function App() {
 
   return (
     <div className={`min-h-screen transition-colors ${darkMode ? 'bg-gray-900 text-gray-200' : 'bg-gray-50 text-gray-900'}`}>
-      <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+      <Header darkMode={darkMode} setDarkMode={setDarkMode} onLogout={handleLogout} />
 
       <main className="max-w-5xl mx-auto p-6 grid gap-12 md:grid-cols-3 md:grid-rows-[auto_auto_auto_1fr]">
-        <section className="md:col-span-3 flex flex-col md:flex-row gap-6">
+        <section className="md:col-span-3 order-1">
           <Summary transactions={transactions} darkMode={darkMode} />
+        </section>
+
+        <section className="md:col-span-1 order-3 md:order-2">
           <WeeklyStats goals={goals} transactions={transactions} darkMode={darkMode} />
         </section>
 
-        <TransactionForm onAddTransaction={handleAddTransaction} darkMode={darkMode} />
+        <TransactionForm onAddTransaction={handleAddTransaction} darkMode={darkMode} className="order-2 md:order-3" />
 
-        <section className={`md:row-span-2 md:col-span-1 rounded-xl shadow-lg p-8 flex flex-col ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
+        <section className={`md:row-span-2 md:col-span-1 rounded-xl shadow-lg p-8 flex flex-col order-4 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
           <CategoryPieChart transactions={transactions} darkMode={darkMode} />
         </section>
 
-        <GoalsSection goals={goals} onAddGoal={handleAddGoal} onToggleGoal={toggleGoal} darkMode={darkMode} />
+        <GoalsSection goals={goals} onAddGoal={handleAddGoal} onToggleGoal={toggleGoal} darkMode={darkMode} className="md:col-span-2 order-5" />
       </main>
 
       <Footer darkMode={darkMode} />
