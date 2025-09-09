@@ -20,31 +20,32 @@ function Summary({ transactions, darkMode }) {
       <h3 className={`text-lg font-semibold mb-4 flex items-center gap-2 ${darkMode ? 'text-indigo-200' : 'text-indigo-700'}`}>
         ₦ Summary
       </h3>
-      <div className="grid grid-cols-4 gap-4 md:gap-6 text-center">
-        <div className={`p-3 md:p-4 rounded-lg transition-transform duration-200 hover:scale-105 ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
-          <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-green-500 mx-auto mb-2" />
-          <p className={`text-xs md:text-sm uppercase font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Income</p>
-          <p className="text-green-500 font-bold text-lg md:text-2xl break-all overflow-hidden" title={`₦${income.toLocaleString()}`}>
+      <div className="grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-6 text-center">
+        <div className={`p-4 rounded-lg transition-transform duration-200 hover:scale-105 ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
+          <TrendingUp className="w-6 h-6 text-green-500 mx-auto mb-2" />
+          <p className={`text-sm uppercase font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Income</p>
+          <p className="text-green-500 font-bold text-xl md:text-2xl break-all overflow-hidden" title={`₦${income.toLocaleString()}`}>
             {formatCurrency(income)}
           </p>
         </div>
-        <div className={`p-3 md:p-4 rounded-lg transition-transform duration-200 hover:scale-105 ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
-          <TrendingDown className="w-5 h-5 md:w-6 md:h-6 text-red-500 mx-auto mb-2" />
-          <p className={`text-xs md:text-sm uppercase font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Expenses</p>
-          <p className="text-red-500 font-bold text-lg md:text-2xl break-all overflow-hidden" title={`₦${expense.toLocaleString()}`}>
+        <div className={`p-4 rounded-lg transition-transform duration-200 hover:scale-105 ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
+          <TrendingDown className="w-6 h-6 text-red-500 mx-auto mb-2" />
+          <p className={`text-sm uppercase font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Expenses</p>
+          <p className="text-red-500 font-bold text-xl md:text-2xl break-all overflow-hidden" title={`₦${expense.toLocaleString()}`}>
             {formatCurrency(expense)}
           </p>
         </div>
-        <div className={`p-3 md:p-4 rounded-lg transition-transform duration-200 hover:scale-105 ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
-          <p className={`text-xs md:text-sm uppercase font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Balance</p>
-          <p className={`font-extrabold text-lg md:text-2xl break-all overflow-hidden ${darkMode ? 'text-indigo-300' : 'text-indigo-700'}`} title={`₦${balance.toLocaleString()}`}>
+        <div className={`p-4 rounded-lg transition-transform duration-200 hover:scale-105 ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
+          <TrendingUp className="w-6 h-6 text-indigo-300 mx-auto mb-2" />
+          <p className={`text-sm uppercase font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Balance</p>
+          <p className={`font-extrabold text-xl md:text-2xl break-all overflow-hidden ${darkMode ? 'text-indigo-300' : 'text-indigo-700'}`} title={`₦${balance.toLocaleString()}`}>
             {formatCurrency(balance)}
           </p>
         </div>
-        <div className={`p-3 md:p-4 rounded-lg transition-transform duration-200 hover:scale-105 ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
-          <PiggyBank className="w-5 h-5 md:w-6 md:h-6 text-blue-500 mx-auto mb-2" />
-          <p className={`text-xs md:text-sm uppercase font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Savings</p>
-          <p className="text-blue-500 font-bold text-lg md:text-2xl break-all overflow-hidden" title={`₦${savings.toLocaleString()}`}>
+        <div className={`p-4 rounded-lg transition-transform duration-200 hover:scale-105 ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
+          <PiggyBank className="w-6 h-6 text-blue-500 mx-auto mb-2" />
+          <p className={`text-sm uppercase font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Savings</p>
+          <p className="text-blue-500 font-bold text-xl md:text-2xl break-all overflow-hidden" title={`₦${savings.toLocaleString()}`}>
             {formatCurrency(savings)}
           </p>
         </div>
