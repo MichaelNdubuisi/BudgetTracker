@@ -52,9 +52,8 @@ const Login = ({ onLogin }) => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="card w-full max-w-md p-8 fade-in">
-        {/* Logo and Title */}
+        {/* Title */}
         <div className="text-center mb-8">
-          <img src="/budget-icon.svg" alt="Budget Tracker" className="w-16 h-16 mx-auto mb-4" />
           <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
             Budget Tracker
           </h1>
