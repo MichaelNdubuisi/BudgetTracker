@@ -6,13 +6,20 @@ const connectDB = async () => {
   try {
     let mongoUri;
 
-    if (process.env.NODE_ENV === 'test' || !process.env.MONGO_URI || process.env.MONGO_URI === 'memory' || process.env.MONGO_URI.includes('localhost') || process.env.MONGO_URI.includes('127.0.0.1')) {
-      // Use in-memory MongoDB for testing, development, or if MONGO_URI points to localhost
+    if (process.env.MONGO_URI && process.env.MONGO_URI !== 'memory') {
+      // Use the provided MONGO_URI
+      mongoUri = process.env.MONGO_URI;
+      console.log('Using provided MongoDB URI');
+    } else if (process.env.NODE_ENV === 'test') {
+      // Use in-memory MongoDB for testing
       const mongoServer = await MongoMemoryServer.create();
       mongoUri = mongoServer.getUri();
-      console.log('Using in-memory MongoDB');
+      console.log('Using in-memory MongoDB for testing');
     } else {
-      mongoUri = process.env.MONGO_URI;
+      // Use in-memory MongoDB for development
+      const mongoServer = await MongoMemoryServer.create();
+      mongoUri = mongoServer.getUri();
+      console.log('Using in-memory MongoDB for development');
     }
 
     const conn = await mongoose.connect(mongoUri);

@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { registerUser, loginUser } from '../api';
+import LoadingSpinner from './LoadingSpinner';
 
 const Login = ({ onLogin, darkMode }) => {
   const [isRegister, setIsRegister] = useState(false);
@@ -23,23 +25,12 @@ const Login = ({ onLogin, darkMode }) => {
     setError('');
 
     try {
-      const endpoint = isRegister ? '/users/register' : '/users/login';
-      const body = isRegister
+      const userData = isRegister
         ? { name: formData.name, email: formData.email, password: formData.password }
         : { email: formData.email, password: formData.password };
 
-      const response = await fetch(`/api${endpoint}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
+      const data = isRegister ? await registerUser(userData) : await loginUser(userData);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Authentication failed');
-      }
-
-      const data = await response.json();
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data));
       onLogin(data);
@@ -105,9 +96,16 @@ const Login = ({ onLogin, darkMode }) => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 disabled:opacity-50"
+            className="w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            {loading ? 'Loading...' : (isRegister ? 'Register' : 'Login')}
+            {loading ? (
+              <>
+                <LoadingSpinner size="w-4 h-4" />
+                Loading...
+              </>
+            ) : (
+              isRegister ? 'Register' : 'Login'
+            )}
           </button>
         </form>
 

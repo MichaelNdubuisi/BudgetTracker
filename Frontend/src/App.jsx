@@ -8,6 +8,7 @@ import GoalsSection from "./components/GoalsSection";
 import WeeklyStats from "./components/WeeklyStats";
 import WelcomeModal from "./components/WelcomeModal";
 import Login from "./components/Login";
+import LoadingSpinner from "./components/LoadingSpinner";
 import { getTransactions, addTransaction, getGoals, addGoal, updateGoal } from "./api";
 
 function App() {
@@ -87,10 +88,10 @@ function App() {
 
   const toggleGoal = async (id) => {
     try {
-      const goal = goals.find((g) => g._id === id);
+      const goal = goals.find((g) => g.id === id);
       if (!goal) return;
       const updatedGoal = await updateGoal(id, { completed: !goal.completed });
-      setGoals(goals.map((g) => (g._id === id ? updatedGoal : g)));
+      setGoals(goals.map((g) => (g.id === id ? { ...updatedGoal, id: updatedGoal._id } : g)));
     } catch (err) {
       setError(err.message);
     }
@@ -111,7 +112,10 @@ function App() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl">Loading...</div>
+        <div className="flex flex-col items-center gap-4">
+          <LoadingSpinner size="w-12 h-12" />
+          <div className="text-xl">Loading...</div>
+        </div>
       </div>
     );
   }

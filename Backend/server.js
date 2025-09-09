@@ -13,7 +13,14 @@ connectDB();
 const app = express();
 
 // Middleware
-app.use(cors());
+if (process.env.NODE_ENV === 'production') {
+  app.use(cors({
+    origin: process.env.FRONTEND_URL || '*',
+    credentials: true
+  }));
+} else {
+  app.use(cors());
+}
 app.use(express.json()); // for parsing JSON bodies
 
 // Default route

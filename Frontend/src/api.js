@@ -1,6 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
-
-console.log("API_BASE_URL:", API_BASE_URL);
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? "https://your-budget-tracker-backend.onrender.com/api" : "/api");
 
 async function fetchJSON(url, options = {}) {
   const token = localStorage.getItem('token');
@@ -78,4 +76,24 @@ export async function deleteGoal(id) {
   return fetchJSON(`${API_BASE_URL}/goals/${id}`, {
     method: 'DELETE',
   });
+}
+
+export async function registerUser(userData) {
+  return fetchJSON(`${API_BASE_URL}/users/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(userData),
+  });
+}
+
+export async function loginUser(userData) {
+  return fetchJSON(`${API_BASE_URL}/users/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(userData),
+  });
+}
+
+export async function getUserProfile() {
+  return fetchJSON(`${API_BASE_URL}/users/profile`);
 }

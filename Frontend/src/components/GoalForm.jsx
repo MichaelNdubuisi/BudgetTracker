@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Target, CheckCircle, AlertCircle } from "lucide-react";
+import LoadingSpinner from "./LoadingSpinner";
 
 function GoalForm({ onAdd, darkMode }) {
   const [title, setTitle] = useState("");
@@ -80,9 +81,16 @@ function GoalForm({ onAdd, darkMode }) {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full bg-indigo-500 text-white py-3 rounded-lg font-semibold hover:bg-indigo-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-indigo-500 text-white py-3 rounded-lg font-semibold hover:bg-indigo-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
-        {isSubmitting ? "Adding..." : "Add Goal"}
+        {isSubmitting ? (
+          <>
+            <LoadingSpinner size="w-4 h-4" />
+            Adding...
+          </>
+        ) : (
+          "Add Goal"
+        )}
       </button>
     </form>
   );
