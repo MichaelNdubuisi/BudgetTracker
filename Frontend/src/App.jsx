@@ -121,7 +121,7 @@ function App() {
   }
 
   if (!user) {
-    return <Login onLogin={handleLogin} darkMode={darkMode} />;
+    return <Login onLogin={handleLogin} />;
   }
 
   if (error) {

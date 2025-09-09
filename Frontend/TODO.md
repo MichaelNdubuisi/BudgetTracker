@@ -33,3 +33,16 @@
 - [ ] Add JWT_SECRET to Backend/.env file (e.g., JWT_SECRET=your_secret_key_here)
 - [ ] Test authentication endpoints
 - [ ] Migrate existing data if any (associate with a user)
+
+# TODO: Improve Login/Register Page Design
+
+- [x] Import icons from lucide-react (User, Mail, Lock, AlertCircle)
+- [x] Add app logo/title with gradient styling
+- [x] Apply .card class for glassmorphism effect
+- [x] Add icons to form input fields
+- [x] Add password confirmation field for register mode
+- [x] Enhance submit button with gradient and hover effects
+- [x] Improve error message display with icons
+- [x] Add fade-in animation on component load
+- [x] Improve responsive design for mobile
+- [ ] Test dark mode and overall functionality
